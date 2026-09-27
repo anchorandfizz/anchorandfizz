@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#6f142b" />
+  <link rel="icon" href="data:," />
+  <title>GateRun — Gate to dorm, minus the walk</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --maroon: #6f142b;
+      --maroon-deep: #4a0b1b;
+      --maroon-soft: #8f2943;
+      --cream: #f6f0e5;
+      --cream-deep: #e9ddcc;
+      --paper: #fffaf2;
+      --ink: #24191b;
+      --muted: #6c5e5f;
+      --line: #cdbfac;
+      --gold: #b78a4a;
+      --white: #fffaf2;
+      --success: #4f715c;
+      --shadow: 0 22px 60px rgba(59, 20, 28, .12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --maroon: #741830;
+        --maroon-deep: #3e0918;
+        --maroon-soft: #94344f;
+        --cream: #ded2c1;
+        --cream-deep: #cbbba6;
+        --paper: #f0e6d8;
+        --ink: #221719;
+        --muted: #675859;
+        --line: #a99580;
+        --gold: #9a6b2e;
+        --white: #fffaf2;
+        --success: #45694f;
+        --shadow: 0 24px 64px rgba(52, 14, 24, .2);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--cream); }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+    button, a { font: inherit; }
+    a { color: inherit; }
+    [data-page][hidden] { display: none !important; }
+
+    .nav {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 0 0 auto;
+    }
+    .brand-logo {
+      display: block;
+      width: 136px;
+      height: 68px;
+      flex: 0 0 auto;
+      overflow: hidden;
+      transition: transform .2s ease;
+    }
+    .brand-logo:hover { transform: rotate(-2deg); }
+    .brand-logo:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+    .brand-logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--success) 16%, transparent);
+    }
+    .nav-links { display: flex; align-items: center; gap: clamp(18px, 3vw, 36px); }
+    .nav-link {
+      position: relative;
+      padding: 29px 0 24px;
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: var(--maroon);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform .2s ease;
+    }
+    .nav-link:hover, .nav-link[aria-current="page"] { color: var(--maroon); }
+    .nav-link[aria-current="page"]::after, .nav-link:hover::after { transform: scaleX(1); }
+
+    h1, h2 {
+      margin: 0;
+      color: inherit;
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 600;
+      letter-spacing: -.035em;
+      line-height: .94;
+    }
+    h3 { line-height: 1.25; }
+    section { width: min(1080px, calc(100% - 48px)); margin: 0 auto; padding: 104px 0; }
+
+    .hero { width: min(1180px, calc(100% - 48px)); margin: 28px auto 0; }
+    .hero-inner {
+      min-height: 650px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(46px, 7vw, 86px);
+    }
+    .doodle, .runner-kicker, .contact-kicker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      color: var(--maroon);
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .doodle::before, .runner-kicker::before, .contact-kicker::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      flex: 0 0 auto;
+      background: currentColor;
+    }
+    h1 { max-width: 640px; font-size: clamp(4rem, 7vw, 6.25rem); }
+    .hero-copy p {
+      max-width: 530px;
+      margin: 28px 0 34px;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; }
+    .order-cta, .runner-status {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 22px;
+      border: 2px solid var(--maroon-deep);
+      border-radius: 999px;
+      background: var(--maroon);
+      color: var(--white);
+      font-size: .88rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+      text-decoration: none;
+      box-shadow: 4px 4px 0 var(--maroon-deep);
+      transition: background .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+    }
+    .order-cta:hover, .runner-status:hover { background: var(--maroon-deep); transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--maroon-deep); }
+    .order-cta:active, .runner-status:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--maroon-deep); }
+    .order-cta:focus-visible, .runner-status:focus-visible, .mood button:focus-visible, summary:focus-visible, .nav-link:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 4px;
+    }
+    .price-note { color: var(--muted); font-size: .88rem; font-weight: 600; }
+    .hero-art { position: relative; min-height: 540px; overflow: hidden; background: var(--cream-deep); }
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 65%, rgba(29, 7, 14, .45));
+      pointer-events: none;
+    }
+    .hero-art img { width: 100%; height: 100%; object-fit: cover; object-position: 56% center; display: block; filter: saturate(.72) sepia(.08) contrast(1.03); }
+    .photo-credit {
+      position: absolute;
+      z-index: 2;
+      left: 24px;
+      bottom: 18px;
+      color: rgba(255, 255, 255, .82);
+      font-size: .67rem;
+      text-decoration: none;
+      text-shadow: 0 1px 7px rgba(0,0,0,.7);
+    }
+    .photo-credit:hover { color: #fff; text-decoration: underline; }
+    .hero-sticker {
+      position: absolute;
+      z-index: 2;
+      top: 28px;
+      right: 28px;
+      width: 136px;
+      padding: 16px 14px;
+      border: 1px solid rgba(255,255,255,.7);
+      background: color-mix(in srgb, var(--maroon-deep) 88%, transparent);
+      color: #fff8f0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.18rem;
+      font-weight: 600;
+      line-height: 1.05;
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+
+    .marquee {
+      width: 100%;
+      margin: 34px 0 4px;
+      overflow: hidden;
+      border-top: 2px solid var(--maroon-deep);
+      border-bottom: 2px solid var(--maroon-deep);
+      background: var(--maroon);
+      color: var(--white);
+      transform: rotate(-.65deg) scale(1.015);
+      box-shadow: 0 8px 0 color-mix(in srgb, var(--gold) 72%, transparent);
+    }
+    .track {
+      width: max-content;
+      display: flex;
+      justify-content: flex-start;
+      padding: 13px 0 12px;
+      color: inherit;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      animation: ticker 18s linear infinite;
+      will-change: transform;
+    }
+    .track span { flex: 0 0 auto; padding-right: 2.8rem; }
+    .marquee:hover .track { animation-play-state: paused; }
+    @keyframes ticker { to { transform: translateX(-25%); } }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 80px;
+      align-items: end;
+      margin-bottom: 48px;
+    }
+    .section-head h2, .pricing h2, .faq h2, .mood-card h2, .runner-intro h2, .runner-steps h2, .runner-fit h2 {
+      font-size: clamp(3.1rem, 5vw, 5rem);
+    }
+    .section-head p { max-width: 540px; margin: 0; color: var(--muted); font-size: 1rem; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .step { position: relative; min-height: 260px; padding: 34px 34px 38px; }
+    .step + .step { border-left: 1px solid var(--line); }
+    .step-num { color: var(--maroon); font-family: "Cormorant Garamond", serif; font-size: 2.1rem; font-weight: 600; line-height: 1; }
+    .step h3 { margin: 48px 0 12px; font-family: "Cormorant Garamond", serif; font-size: 1.65rem; font-weight: 600; }
+    .step p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+    .mood-zone { width: 100%; background: var(--maroon-deep); color: var(--white); }
+    .mood-zone section { padding-top: 86px; padding-bottom: 86px; }
+    .mood-card { display: grid; grid-template-columns: 1fr 1fr; gap: 76px; align-items: center; }
+    .mood-card p { margin: 18px 0 0; color: rgba(255,255,255,.7); }
+    .mood { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 28px; }
+    .mood button {
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,.34);
+      border-radius: 2px;
+      background: transparent;
+      color: rgba(255,255,255,.78);
+      cursor: pointer;
+      font-size: .8rem;
+      font-weight: 600;
+    }
+    .mood button:hover { border-color: rgba(255,255,255,.75); color: #fff; }
+    .mood button[aria-pressed="true"] { border-color: var(--cream); background: var(--cream); color: var(--maroon-deep); }
+    .verdict { padding: 36px; border: 1px solid color-mix(in srgb, var(--gold) 65%, transparent); background: rgba(255,255,255,.055); }
+    .verdict-label { color: var(--gold); font-size: .69rem; font-weight: 700; letter-spacing: .12em; }
+    .verdict-text { margin: 16px 0 12px; font-family: "Cormorant Garamond", serif; font-size: clamp(2.25rem, 4vw, 3.5rem); font-weight: 600; line-height: 1; }
+    .verdict small { color: rgba(255,255,255,.65); }
+
+    .pricing { display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; align-items: center; }
+    .big-price { color: var(--maroon); font-family: "Cormorant Garamond", serif; font-size: clamp(7.5rem, 15vw, 11.5rem); font-weight: 600; letter-spacing: -.07em; line-height: .72; }
+    .big-price span { display: block; margin-top: 32px; color: var(--muted); font-family: "Manrope", sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .12em; line-height: 1.4; text-transform: uppercase; }
+    .pricing p { margin: 22px 0 0; color: var(--muted); font-size: 1rem; }
+    .tiny-rule { width: 70px; margin: 30px 0; border-top: 1px solid var(--gold); }
+
+    .faq { padding-top: 12px; }
+    .faq h2 { margin-bottom: 40px; }
+    details { border-top: 1px solid var(--line); }
+    details:last-child { border-bottom: 1px solid var(--line); }
+    summary { display: flex; justify-content: space-between; gap: 20px; padding: 22px 2px; cursor: pointer; list-style: none; font-family: "Cormorant Garamond", serif; font-size: 1.42rem; font-weight: 600; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--maroon); font-family: "Manrope", sans-serif; font-size: 1.1rem; font-weight: 400; }
+    details[open] summary::after { content: "–"; }
+    details p { max-width: 750px; margin: -2px 0 24px; color: var(--muted); font-size: .94rem; }
+
+    .final, .runner-final {
+      width: min(1180px, calc(100% - 48px));
+      margin: 8px auto 48px;
+      padding: 86px 30px calc(86px + env(safe-area-inset-bottom));
+      background: var(--maroon-deep);
+      color: var(--white);
+      text-align: center;
+    }
+    .final h2, .runner-final h2 { max-width: 850px; margin: 0 auto 20px; font-size: clamp(3.5rem, 7vw, 6.2rem); }
+    .final p, .runner-final p { max-width: 620px; margin: 0 auto 30px; color: rgba(255,255,255,.72); }
+    .final .order-cta, .runner-final .runner-status { border-color: var(--cream); background: var(--cream); color: var(--maroon-deep); }
+    .final .order-cta:hover, .runner-final .runner-status:hover { background: var(--white); }
+    .form-note { margin-top: 18px; color: rgba(255,255,255,.55); font-size: .72rem; }
+
+    .setup-toast {
+      display: none;
+      position: fixed;
+      z-index: 99;
+      left: 50%;
+      bottom: 20px;
+      width: min(430px, calc(100% - 28px));
+      padding: 13px 16px;
+      transform: translateX(-50%);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: var(--shadow);
+      text-align: center;
+      font-size: .86rem;
+      font-weight: 600;
+    }
+    .setup-toast.show { display: block; }
+
+    .runner-hero { width: min(1180px, calc(100% - 48px)); margin: 28px auto 0; background: var(--maroon-deep); color: var(--white); }
+    .runner-hero-inner {
+      min-height: 600px;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 80px;
+      align-items: center;
+      width: min(1040px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 88px 0;
+    }
+    .runner-kicker { color: var(--gold); }
+    .runner-hero h1 { max-width: 720px; font-size: clamp(4.2rem, 8vw, 7rem); }
+    .runner-hero p { max-width: 620px; margin: 26px 0 0; color: rgba(255,255,255,.72); font-size: 1.08rem; }
+    .shift-card { padding: 40px; border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent); background: rgba(255,255,255,.055); color: var(--white); }
+    .shift-card strong { display: block; margin-bottom: 18px; font-family: "Cormorant Garamond", serif; font-size: 2.4rem; font-weight: 600; line-height: 1.05; }
+    .shift-card p { margin: 0; color: rgba(255,255,255,.67); font-size: .93rem; }
+    .shift-stamp { display: inline-block; margin-top: 26px; padding-top: 10px; border-top: 1px solid var(--gold); color: var(--gold); font-size: .67rem; font-weight: 700; letter-spacing: .12em; }
+    .runner-intro { display: grid; grid-template-columns: .85fr 1.15fr; gap: 90px; align-items: start; }
+    .runner-copy { color: var(--muted); font-size: 1rem; }
+    .runner-copy p:first-child { margin-top: 0; }
+    .runner-list { margin: 32px 0 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
+    .runner-list li { display: grid; grid-template-columns: 38px 1fr; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+    .runner-list b { color: var(--maroon); font-family: "Cormorant Garamond", serif; font-size: 1.2rem; }
+    .runner-steps { width: 100%; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
+    .runner-steps section { padding-top: 84px; padding-bottom: 84px; }
+    .runner-steps .steps { margin-top: 42px; }
+    .runner-fit { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; }
+    .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; align-content: start; border: 1px solid var(--line); background: var(--line); }
+    .fit-note { min-height: 120px; display: flex; align-items: flex-end; padding: 22px; background: var(--cream); font-family: "Cormorant Garamond", serif; font-size: 1.25rem; font-weight: 600; }
+
+    .contact-page { width: min(1180px, calc(100% - 48px)); margin: 28px auto 48px; border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); }
+    .contact-inner {
+      width: min(1040px, calc(100% - 64px));
+      min-height: 650px;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 82px;
+      align-items: center;
+      margin: 0 auto;
+      padding: 88px 0;
+    }
+    .contact-inner h1 { max-width: 720px; font-size: clamp(4.1rem, 8vw, 6.8rem); }
+    .contact-lead { max-width: 620px; margin: 26px 0 32px; color: var(--muted); font-size: 1.06rem; }
+    .contact-email { overflow-wrap: anywhere; }
+    .support-card { padding: 40px; background: var(--maroon-deep); color: var(--white); }
+    .support-card h2 { margin-bottom: 26px; font-size: clamp(2.5rem, 4vw, 3.7rem); }
+    .support-list { margin: 0; padding: 0; list-style: none; }
+    .support-list li { padding: 16px 0; border-top: 1px solid rgba(255,255,255,.22); }
+    .support-list strong { display: block; margin-bottom: 4px; font-size: .86rem; }
+    .support-list span { color: rgba(255,255,255,.66); font-size: .84rem; }
+    .support-note { max-width: 620px; margin: 18px 0 0; color: var(--muted); font-size: .82rem; }
+
+    body, body * { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; }
+    h1, h2, h3, .big-price, .step-num, .verdict-text, .shift-card strong, .runner-list b, .fit-note, summary {
+      font-weight: 700;
+      letter-spacing: -.055em;
+    }
+    .status, .nav-link, .doodle, .runner-kicker, .contact-kicker, .order-cta, .runner-status,
+    .price-note, .track, .mood button, .verdict-label, .form-note, .shift-stamp, .big-price span {
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .hero-sticker {
+      border: 2px solid rgba(255,255,255,.82);
+      transform: rotate(3deg);
+      box-shadow: 6px 6px 0 rgba(74, 11, 27, .55);
+      animation: sticker-float 3.2s ease-in-out infinite;
+    }
+    @keyframes sticker-float {
+      0%, 100% { transform: rotate(3deg) translateY(0); }
+      50% { transform: rotate(1.5deg) translateY(-6px); }
+    }
+    .step { transition: background .2s ease, transform .2s ease; }
+    .step:hover { z-index: 1; background: var(--paper); transform: translateY(-5px); }
+    .step-num { display: inline-block; transition: transform .2s ease; }
+    .step:hover .step-num { transform: rotate(-8deg) scale(1.08); }
+    .mood button {
+      border-radius: 999px;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+    }
+    .mood button:hover { transform: translateY(-2px) rotate(-1deg); }
+    .mood button:nth-child(even):hover { transform: translateY(-2px) rotate(1deg); }
+    .verdict { transition: transform .2s ease, background .2s ease; }
+    .verdict.bump { animation: verdict-bump .36s ease; }
+    @keyframes verdict-bump {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.025) rotate(-.5deg); background: rgba(255,255,255,.1); }
+      100% { transform: scale(1); }
+    }
+    summary { transition: color .18s ease, padding-left .18s ease; }
+    summary:hover { color: var(--maroon); padding-left: 10px; }
+    .final .order-cta, .runner-final .runner-status {
+      border-color: var(--cream);
+      box-shadow: 4px 4px 0 var(--gold);
+    }
+    .final .order-cta:hover, .runner-final .runner-status:hover { box-shadow: 2px 2px 0 var(--gold); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+    @media (max-width: 760px) {
+      .nav { width: calc(100% - 32px); min-height: 96px; padding: 10px 0 0; flex-wrap: wrap; }
+      .nav-brand { width: 100%; justify-content: flex-start; gap: 12px; }
+      .brand-logo { width: 120px; height: 60px; }
+      .status { justify-content: flex-start; }
+      .nav-links { width: 100%; justify-content: center; gap: 20px; }
+      .nav-link { padding: 12px 0 15px; font-size: .76rem; }
+      section { width: calc(100% - 36px); padding: 72px 0; }
+      .hero, .runner-hero, .contact-page, .final, .runner-final { width: calc(100% - 24px); }
+      .hero { margin-top: 12px; }
+      .hero-inner { min-height: auto; grid-template-columns: 1fr; }
+      .hero-copy { padding: 50px 24px 42px; }
+      h1 { font-size: clamp(3.8rem, 16.5vw, 5.1rem); }
+      .hero-copy p { margin: 22px 0 28px; font-size: .98rem; }
+      .hero-actions { align-items: stretch; flex-direction: column; gap: 15px; }
+      .order-cta { width: 100%; }
+      .price-note { text-align: center; }
+      .hero-art { min-height: 370px; }
+      .hero-art img { object-position: 50% center; }
+      .hero-sticker { top: 18px; right: 18px; width: 118px; font-size: 1.05rem; }
+      .photo-credit { left: 16px; bottom: 12px; max-width: 190px; }
+      .marquee { width: 100%; margin-top: 24px; }
+      .track { padding: 12px 0 11px; font-size: .66rem; line-height: 1.5; }
+      .section-head, .mood-card, .pricing, .runner-hero-inner, .runner-intro, .runner-fit, .contact-inner { grid-template-columns: 1fr; gap: 32px; }
+      .section-head { align-items: start; margin-bottom: 34px; }
+      .section-head h2, .pricing h2, .faq h2, .mood-card h2, .runner-intro h2, .runner-steps h2, .runner-fit h2 { font-size: clamp(3rem, 14vw, 4.2rem); }
+      .steps { grid-template-columns: 1fr; }
+      .step { min-height: 0; padding: 30px 10px; }
+      .step + .step { border-top: 1px solid var(--line); border-left: 0; }
+      .step h3 { margin: 26px 0 9px; }
+      .mood-zone section { padding-top: 68px; padding-bottom: 68px; }
+      .mood-card { gap: 40px; }
+      .mood button { flex: 1 1 calc(50% - 9px); }
+      .verdict { padding: 26px; }
+      .pricing { gap: 40px; }
+      .big-price { margin-bottom: 8px; font-size: clamp(7.2rem, 38vw, 10rem); }
+      .faq { padding-top: 8px; }
+      summary { font-size: 1.25rem; }
+      .final, .runner-final { margin-bottom: 24px; padding: 68px 22px calc(68px + env(safe-area-inset-bottom)); }
+      .final h2, .runner-final h2 { font-size: clamp(3.2rem, 15vw, 4.8rem); }
+      .runner-hero { margin-top: 12px; }
+      .runner-hero-inner { width: calc(100% - 44px); min-height: auto; padding: 62px 0; gap: 42px; }
+      .runner-hero h1 { font-size: clamp(3.9rem, 17vw, 5.3rem); }
+      .runner-hero p { font-size: .98rem; }
+      .shift-card { padding: 28px; }
+      .runner-intro { gap: 28px; }
+      .runner-steps section { padding-top: 68px; padding-bottom: 68px; }
+      .fit-grid { grid-template-columns: 1fr; }
+      .fit-note { min-height: 88px; }
+      .contact-page { margin-top: 12px; margin-bottom: 24px; }
+      .contact-inner { width: calc(100% - 44px); min-height: auto; padding: 62px 0; gap: 46px; }
+      .contact-inner h1 { font-size: clamp(3.9rem, 17vw, 5.3rem); }
+      .support-card { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Page navigation">
+    <div class="nav-brand">
+      <a class="brand-logo" href="#home" aria-label="GateRun home">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAsMAAAFhCAYAAACVsKc6AAAQAElEQVR4AexdB4AkRdV+rzpN2nz5jihBkkhGRAEDSclyiCCScxDJoLjknA7JSVQED5UoGOA/DKBIkgwSJcOlvd2d2KH+99Vs780te8flWL3" alt="GateRun logo" />
+      </a>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" data-home-link href="#home">Order</a>
+      <a class="nav-link" data-runner-link href="#runner">Become a runner</a>
+      <a class="nav-link" data-contact-link href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main id="main" data-page="home">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="doodle">GateRun handles the last 500 feet</div>
+          <h1>Your food made it to the gate. We’ll do the rest.</h1>
+          <p>A fellow student grabs your delivery at the campus gate and brings it to your dorm—your door before 10pm, or your lobby after unless your runner lives in your hall.</p>
+          <div class="hero-actions">
+            <a class="order-cta" data-order-link href="#">Get my food →</a>
+            <span class="price-note">$4 per run. That’s it.</span>
+          </div>
+        </div>
+        <div class="hero-art">
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4QD8RXhpZgAASUkqAAgAAAAGABIBAwABAAAAAQAAABoBBQABAAAAsAAAABsBBQABAAAAuAAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAAVgAAAAAA" alt="Campus walkway" />
+          <a class="photo-credit" href="https://give.fordham.edu/schools/FordhamUniversity/fordham-giving-day-ignite-change/pages/fordham-college-at-rose-hill/sharing/1" target="_blank" rel="noopener noreferrer">Fordham campus photo</a>
+          <div class="hero-sticker">Walk denied.<br>Food acquired.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="track"><span>GATE → DORM → DONE • NO COAT REQUIRED •</span><span>GATE → DORM → DONE • NO COAT REQUIRED •</span><span>GATE → DORM → DONE • NO COAT REQUIRED •</span></div>
+    </div>
+
+    <section id="how">
+      <div class="section-head">
+        <h2>Three steps.<br>Zero sad walks.</h2>
+        <p>Keep ordering from your usual delivery app. GateRun is the last little leg between the gate and your dorm.</p>
+      </div>
+      <div class="steps">
+        <article class="step"><div class="step-num">01</div><h3>Order your food</h3><p>Send it to the campus gate like usual. Nothing new to download.</p></article>
+        <article class="step"><div class="step-num">02</div><h3>Drop us the details</h3><p>Use the quick order form with your name, dorm, room, and gate ETA.</p></article>
+        <article class="step"><div class="step-num">03</div><h3>Keep doing nothing</h3><p>A student runner grabs the bag. Before 10pm, we come to your door. After 10pm, meet us in your lobby unless your runner lives in your hall.</p></article>
+      </div>
+    </section>
+
+    <div class="mood-zone">
+      <section>
+        <div class="mood-card">
+          <div>
+            <h2>How bad is the walk looking?</h2>
+            <p>Choose your current level of “absolutely not.”</p>
+            <div class="mood" role="group" aria-label="Choose your reason">
+              <button type="button" data-mood="rain" aria-pressed="true">It’s raining</button>
+              <button type="button" data-mood="study" aria-pressed="false">Locked in</button>
+              <button type="button" data-mood="late" aria-pressed="false">Too late</button>
+              <button type="button" data-mood="lazy" aria-pressed="false">Just lazy tbh</button>
+            </div>
+          </div>
+          <div class="verdict" aria-live="polite">
+            <div class="verdict-label">OFFICIAL VERDICT</div>
+            <div class="verdict-text" id="verdict">Wet socks are not part of the meal.</div>
+            <small id="verdict-sub">Stay dry. We know where the gate is.</small>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section>
+      <div class="pricing">
+        <div class="big-price">$4<span>one flat campus delivery fee</span></div>
+        <div>
+          <h2>Less than your “small” coffee.</h2>
+          <p>No mystery calculator. No twelve-line fee breakdown. Just four bucks for not having to put shoes on.</p>
+          <div class="tiny-rule"></div>
+          <a class="order-cta" data-order-link href="#">Send in an order →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq">
+      <h2>Okay, but…</h2>
+      <details><summary>Is this part of DoorDash?</summary><p>Nope. Order through DoorDash or your usual delivery app; GateRun is a separate student-run handoff from the campus gate to your dorm.</p></details>
+      <details><summary>Who is touching my food?</summary><p>A fellow student runner picks up the sealed bag using the name on your order. They carry it; they do not open it.</p></details>
+      <details><summary>Do I need another app?</summary><p>No. The order button opens one quick form. Fill it out, then get back to whatever you were avoiding the walk for.</p></details>
+      <details><summary>Where do I meet my runner after 10pm?</summary><p>Usually in your dorm lobby. Residence hall access is limited after 10pm, so your runner will text when they arrive and meet you there.</p></details>
+      <details><summary>Can I use it for a group order?</summary><p>Absolutely. One gate pickup, one dorm drop, one $4 fee. Splitting that with your floor is elite economics.</p></details>
+    </section>
+
+    <section class="final">
+      <h2>Your fries have traveled far enough.</h2>
+      <p>Send us the gate ETA. We’ll take it from there.</p>
+      <a class="order-cta" data-order-link href="#">Bring it to me →</a>
+      <div class="form-note">Opens the GateRun order form</div>
+    </section>
+  </main>
+
+  <main id="runner" data-page="runner" hidden>
+    <div class="runner-hero">
+      <div class="runner-hero-inner">
+        <div>
+          <div class="runner-kicker">Runner crew: applications open</div>
+          <h1>Get paid to walk with purpose.</h1>
+          <p>Pick up sealed delivery orders at the campus gate, bring them to nearby dorms, and make some flexible money between the rest of your life.</p>
+        </div>
+        <aside class="shift-card" aria-label="What a GateRun shift is like">
+          <strong>Short windows.<br>Clear handoffs.<br>No boss voice.</strong>
+          <p>You choose when you’re available. GateRun groups nearby orders so one gate trip can cover more than one delivery.</p>
+          <span class="shift-stamp">STUDENT-RUN, OBVIOUSLY</span>
+        </aside>
+      </div>
+    </div>
+
+    <section class="runner-intro">
+      <h2>You bring the legs. We bring the order queue.</h2>
+      <div class="runner-copy">
+        <p>This is last-mile delivery inside campus. You never place the food order, open a bag, or deal with a restaurant. Your part starts at the gate and ends at the dorm.</p>
+        <p>Live in a residence hall? You can take room deliveries in your own building after 10pm, when other runners can only meet customers in the lobby.</p>
+        <ul class="runner-list">
+          <li><b>01</b><span>Be a current Fordham student.</span></li>
+          <li><b>02</b><span>Have a phone and be reachable during your run window.</span></li>
+          <li><b>03</b><span>Be reliable with names, ETAs, and sealed bags.</span></li>
+          <li><b>04</b><span>Know campus well enough to find a dorm without a spiritual crisis.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="runner-steps">
+      <section>
+        <h2>A run, in three moves.</h2>
+        <div class="steps">
+          <article class="step"><div class="step-num">01</div><h3>Pick a window</h3><p>Choose a time when you’re already free and ready to move around campus.</p></article>
+          <article class="step"><div class="step-num">02</div><h3>Grab the right bags</h3><p>Use the order names and gate ETAs to collect each sealed delivery.</p></article>
+          <article class="step"><div class="step-num">03</div><h3>Make the dorm drops</h3><p>Deliver to the room before 10pm. After 10pm, meet in the lobby—or go to the room if you live in that building.</p></article>
+        </div>
+      </section>
+    </div>
+
+    <section class="runner-fit">
+      <div>
+        <h2>This is probably your thing if…</h2>
+        <p class="runner-copy">You want flexible campus money without locking yourself into a weekly shift—and you’re the friend who actually shows up when you say you will.</p>
+      </div>
+      <div class="fit-grid" aria-label="Runner fit checklist">
+        <div class="fit-note">You’re free some nights or weekends.</div>
+        <div class="fit-note">You don’t mind being outside for a bit.</div>
+        <div class="fit-note">You can keep multiple orders straight.</div>
+        <div class="fit-note">You answer your phone. Rare talent.</div>
+      </div>
+    </section>
+
+    <section class="runner-final">
+      <h2>Ready to make the run?</h2>
+      <p>Tell us when you’re available and a little about yourself. The application takes just a few minutes.</p>
+      <a class="runner-status" data-runner-form-link href="https://forms.yandex.com/cloud/6ab7f4b86d2d731984e4fb34" target="_blank" rel="noopener noreferrer">Apply to become a runner →</a>
+    </section>
+  </main>
+
+  <main id="contact" data-page="contact" hidden>
+    <div class="contact-page">
+      <section class="contact-inner">
+        <div>
+          <div class="contact-kicker">Need help with an order?</div>
+          <h1>We’ll get back to you in under 20 minutes.</h1>
+          <p class="contact-lead">Email GateRun with your name, dorm, and the name on your delivery order so we can help quickly.</p>
+          <a class="order-cta contact-email" href="mailto:gaterunapp@yandex.com?subject=GateRun%20support">email us</a>
+          <p class="support-note">For active orders, include your gate ETA and a quick description of what went wrong.</p>
+        </div>
+        <aside class="support-card" aria-label="What to include in your support email">
+          <h2>Help us find your order fast.</h2>
+          <ul class="support-list">
+            <li><strong>Your name</strong><span>The name you used on the GateRun form.</span></li>
+            <li><strong>Your dorm</strong><span>Include your hall and room number.</span></li>
+            <li><strong>Delivery order name</strong><span>The name printed on the bag at the gate.</span></li>
+          </ul>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <div class="setup-toast" id="setupToast" role="status">The order form link is being set up. Check back soon.</div>
+
+  <script>
+    const ORDER_FORM_URL = "https://forms.yandex.com/cloud/6ab7602dd04688bd93aacb83";
+
+    const pages = document.querySelectorAll("[data-page]");
+    const homeLink = document.querySelector("[data-home-link]");
+    const runnerLink = document.querySelector("[data-runner-link]");
+    const contactLink = document.querySelector("[data-contact-link]");
+    function showPage() {
+      const hash = window.location.hash;
+      const pageName = hash === "#runner" ? "runner" : hash === "#contact" ? "contact" : "home";
+      pages.forEach(function (page) {
+        page.hidden = page.dataset.page !== pageName;
+      });
+      homeLink.setAttribute("aria-current", pageName === "home" ? "page" : "false");
+      runnerLink.setAttribute("aria-current", pageName === "runner" ? "page" : "false");
+      contactLink.setAttribute("aria-current", pageName === "contact" ? "page" : "false");
+      document.title = pageName === "runner" ? "Become a Runner — GateRun" : pageName === "contact" ? "Contact GateRun" : "GateRun — Gate to dorm, minus the walk";
+      if (hash === "#runner" || hash === "#contact" || hash === "#home") window.scrollTo(0, 0);
+    }
+    window.addEventListener("hashchange", showPage);
+    showPage();
+
+    const orderLinks = document.querySelectorAll("[data-order-link]");
+    const hasLiveForm = /^https:\/\//.test(ORDER_FORM_URL);
+    orderLinks.forEach(function (link) {
+      if (hasLiveForm) {
+        link.href = ORDER_FORM_URL;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      } else {
+        link.href = "#";
+        link.addEventListener("click", function (event) {
+          event.preventDefault();
+          const toast = document.getElementById("setupToast");
+          toast.classList.add("show");
+          window.setTimeout(function () { toast.classList.remove("show"); }, 2800);
+        });
+      }
+    });
+
+    const moods = {
+      rain: ["Wet socks are not part of the meal.", "Stay dry. We know where the gate is."],
+      study: ["Closing the laptop now would break the spell.", "Protect the academic momentum. And the fries."],
+      late: ["The gate is somehow farther after 11.", "You stay cozy. Let a runner do runner things."],
+      lazy: ["Honestly? That’s a complete reason.", "No fake productivity required. We got you."]
+    };
+    document.querySelectorAll("[data-mood]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        document.querySelectorAll("[data-mood]").forEach(function (item) { item.setAttribute("aria-pressed", "false"); });
+        button.setAttribute("aria-pressed", "true");
+        const copy = moods[button.dataset.mood];
+        document.getElementById("verdict").textContent = copy[0];
+        document.getElementById("verdict-sub").textContent = copy[1];
+        const verdictCard = document.querySelector(".verdict");
+        verdictCard.classList.remove("bump");
+        void verdictCard.offsetWidth;
+        verdictCard.classList.add("bump");
+      });
+    });
+  </script>
+</body>
+</html>
